@@ -75,7 +75,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                 this.factory.useSslProtocol();
             }
         } catch(Exception e) {
-            Log.e("RabbitMqConnection", e.toString());
+            Log.e("ReactNative", Util.StackTraceStringP("RabbitMqConnection", e));
         }
 
     }
@@ -92,7 +92,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
             WritableMap event = Arguments.createMap();
             event.putString("name", "connected");
 
-            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqConnectionEvent", event);
+            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
         }else{ 
 
             try {
@@ -105,7 +105,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                 event.putString("code", "");
                 event.putString("description", e.getMessage());
 
-                this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqConnectionEvent", event);
+                this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
 
                 this.connection = null; 
 
@@ -118,7 +118,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                     this.connection.addShutdownListener(new ShutdownListener() {
                         @Override
                         public void shutdownCompleted(ShutdownSignalException cause) {
-                            Log.e("RabbitMqConnection", "Shutdown signal received " + cause);
+                            Log.e("ReactNative", "Shutdown signal received " + cause);
                             onClose(cause);
                         }
                     });
@@ -128,12 +128,12 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                       
                         @Override
                         public void handleRecoveryStarted(Recoverable recoverable) {
-                            Log.e("RabbitMqConnection", "RecoveryStarted " + recoverable);
+                            Log.e("ReactNative", "RecoveryStarted " + recoverable);
                         }
                       
                         @Override
                         public void handleRecovery(Recoverable recoverable) {
-                            Log.e("RabbitMqConnection", "Recoverable " + recoverable);
+                            Log.e("ReactNative", "Recoverable " + recoverable);
                             onRecovered();
                         }
                         
@@ -146,11 +146,11 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                     this.channel.addConfirmListener(new ConfirmListener() {
 
                         public void handleNack(long deliveryTag, boolean multiple) throws IOException {
-                            Log.e("RabbitMqQueue", "Not ack received");
+                            Log.e("ReactNative", "Not ack received");
                         }
                 
                         public void handleAck(long deliveryTag, boolean multiple) throws IOException {
-                            Log.e("RabbitMqQueue", "Ack received");
+                            Log.e("ReactNative", "Ack received");
                         }
                     });
 
@@ -158,12 +158,12 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                     WritableMap event = Arguments.createMap();
                     event.putString("name", "connected");
 
-                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqConnectionEvent", event);
+                    this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
 
                 } catch (Exception e){
 
-                    Log.e("RabbitMqConnectionChannel", "Create channel error " + e);
-                    e.printStackTrace();
+                    Log.e("ReactNativeChannel", "Create channel error " + Util.StackTraceString(e));
+
 
                 } 
             }
@@ -257,7 +257,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
 
         for (RabbitMqQueue queue : queues) {
 		    if (Objects.equals(exchange_name, queue.exchange_name)){
-                Log.e("RabbitMqConnection", "publish " + message);
+                Log.e("ReactNative", "publish " + message);
                 queue.publish(message, exchange_name);
                 return;
             }
@@ -279,7 +279,7 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
 
          for (RabbitMqExchange exchange : exchanges) {
 		    if (Objects.equals(exchange_name, exchange.name)){
-                Log.e("RabbitMqConnection", "Exchange publish: " + message);
+                Log.e("ReactNative", "Exchange publish: " + message);
                 exchange.publish(message, routing_key, message_properties);
                 return;
             }
@@ -310,8 +310,8 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
 
             this.connection.close();
          } catch (Exception e){
-            Log.e("RabbitMqConnection", "Connection closing error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Connection closing error " + Util.StackTraceString(e));
+
         } finally { 
             this.connection = null; 
             this.factory = null;
@@ -320,21 +320,21 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
     }
 
     private void onClose(ShutdownSignalException cause) { 
-        Log.e("RabbitMqConnection", "Closed");
+        Log.e("ReactNative", "Closed");
 
         WritableMap event = Arguments.createMap();
         event.putString("name", "closed");
 
-        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqConnectionEvent", event);
+        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
     } 
 
     private void onRecovered() { 
-        Log.e("RabbitMqConnection", "Recovered");
+        Log.e("ReactNative", "Recovered");
 
         WritableMap event = Arguments.createMap();
         event.putString("name", "reconnected");
 
-        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqConnectionEvent", event);
+        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
     } 
 
     @Override
@@ -349,9 +349,9 @@ class RabbitMqConnection extends ReactContextBaseJavaModule  {
                 }
             }.execute().get();
         } catch (InterruptedException ioe) {
-            Log.e("RabbitMqConnection", "onCatalystInstanceDestroy", ioe);
+            Log.e("ReactNative", "onCatalystInstanceDestroy", ioe);
         } catch (ExecutionException ee) {
-            Log.e("RabbitMqConnection", "onCatalystInstanceDestroy", ee);
+            Log.e("ReactNative", "onCatalystInstanceDestroy", ee);
         }
     }
 

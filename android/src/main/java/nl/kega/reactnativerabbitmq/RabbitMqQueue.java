@@ -61,17 +61,17 @@ public class RabbitMqQueue {
          
 
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue error " + Util.StackTraceString(e));
+
         }
     }
 
     public void onMessage(WritableMap message){
-        Log.e("RabbitMqQueue", message.getString("message"));
+        Log.e("ReactNative", message.getString("message"));
 
         message.putString("queue_name", this.name);
 
-        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqQueueEvent", message);
+        this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", message);
     }
 
     public void bind(RabbitMqExchange exchange, String routing_key){ 
@@ -81,8 +81,8 @@ public class RabbitMqQueue {
 
             this.channel.queueBind(this.name, this.exchange.name, this.routing_key);
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue bind error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue bind error " + Util.StackTraceString(e));
+
         }
     }
 
@@ -95,8 +95,8 @@ public class RabbitMqQueue {
             }
             
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue unbind error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue unbind error " + Util.StackTraceString(e));
+
         }
     }
     /*
@@ -109,8 +109,8 @@ public class RabbitMqQueue {
        
             this.channel.basicPublish(this.exchange_name, routing_key, properties, message_body_bytes);
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue publish error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue publish error " + Util.StackTraceString(e));
+
         }
     }
     */
@@ -122,10 +122,10 @@ public class RabbitMqQueue {
             event.putString("name", "purged");
             event.putString("queue_name", this.name);
 
-            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqQueueEvent", event);
+            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue purge error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue purge error " + Util.StackTraceString(e));
+
         }
     } 
 
@@ -137,10 +137,10 @@ public class RabbitMqQueue {
             event.putString("name", "deleted");
             event.putString("queue_name", this.name);
 
-            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("RabbitMqQueueEvent", event);
+            this.context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ReactNativeEvent", event);
         } catch (Exception e){
-            Log.e("RabbitMqQueue", "Queue delete error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Queue delete error " + Util.StackTraceString(e));
+
         }
     } 
 
@@ -177,7 +177,7 @@ public class RabbitMqQueue {
                     }
                     break;
                 case String:
-                    Log.e("RabbitMqQueue", data.getString(key));
+                    Log.e("ReactNative", data.getString(key));
                     args.put(key, data.getString(key));
                     break;
 
@@ -192,11 +192,11 @@ public class RabbitMqQueue {
         try {
             this.channel.basicAck(delivery_tag, false);
         } catch (IOException e){
-            Log.e("RabbitMqQueue", "basicAck " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "basicAck " + Util.StackTraceString(e));
+
         } catch (AlreadyClosedException e){
-            Log.e("RabbitMqQueue AlreadyClosedException", "basicAck " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "basicAck " + Util.StackTraceStringP("AlreadyClosedException", e));
+
         } 
   
     }

@@ -44,8 +44,8 @@ public class RabbitMqExchange {
             this.channel.exchangeDeclare(this.name, this.type, this.durable, this.autodelete, this.internal, args);
 
         } catch (Exception e){
-            Log.e("RabbitMqExchange", "Exchange error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Exchange error " + Util.StackTraceString(e));
+
         }
 
     }
@@ -97,15 +97,15 @@ public class RabbitMqExchange {
                     //if (message_properties.hasKey("headers")){properties.expiration(message_properties.getBoolean("headers"))}
 
                  } catch (Exception e){
-                    Log.e("RabbitMqExchange", "Exchange publish properties error " + e);
-                    e.printStackTrace();
+                    Log.e("ReactNative", "Exchange publish properties error " + Util.StackTraceString(e));
+
                 }
             }
             
             this.channel.basicPublish(this.name, routing_key, properties.build(), message_body_bytes);
         } catch (Exception e){
-            Log.e("RabbitMqExchange", "Exchange publish error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Exchange publish error " + Util.StackTraceString(e));
+
 
         }
 
@@ -115,8 +115,8 @@ public class RabbitMqExchange {
         try {
             this.channel.exchangeDelete(this.name, ifUnused);
         } catch (Exception e){
-            Log.e("RabbitMqExchange", "Exchange delete error " + e);
-            e.printStackTrace();
+            Log.e("ReactNative", "Exchange delete error " + Util.StackTraceString(e));
+
         }
     }
 
